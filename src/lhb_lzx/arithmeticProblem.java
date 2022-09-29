@@ -35,203 +35,141 @@ public class arithmeticProblem {
 
             String expArr[] = new String[2];//定义生成的题目
 
-            //算术题中的四个数字
-            String number[] = new String[4];
-            for (int j = 0; j < 4; j++) {
-                number[j] = getRandomNumber(range);
-            }
-
             int index = 0;
-            int index2 = 0;
             int fenzi = 0;
             int fenmu = 0;
             int[] operators = new int[3];
-            String str = number[0];
-            String result = number[0];
 
-            //算术题中的三个运算符
-            for (int j = 0; j < 3; j++) {
-                int operator = (int) (random.nextInt(4));
-                operators[j] = operator;
-            }
 
-            //这一遍遍历把乘除运算算完
-            for (int j = 0; j < operators.length; j++) {
-                // 为乘号和除号
-                if(operators[j] > 1){
-//                    number[i]和number[i+1]进行运算，运算表达式另搞，结果放在number[i]中
-                    for (int k = j; k >= 0 ; k--) {
-                        if(!"".equals(number[k])){
-                            index = k;
-                            break;
-                        }
-                    }
-                    int[] number1 = onlyGetNumber(number[index]);
-                    int[] number2 = onlyGetNumber(number[j+1]);
-
-                    //转化为分子分母计算
-                    int a = number1[0]*number1[2]+number1[1];
-                    int b = number1[2];
-                    int c = number2[0]*number2[2]+number2[1];
-                    int d = number2[2];
-
-                    if(operators[j] == 1){
-                        fenzi = a * c;
-                        fenmu = b * d;
-                    }else if(operators[j] == 2){
-                        fenzi = a * d;
-                        fenmu = b * c;
-                    }
-
-                    result = reductionofFraction(fenzi, fenmu);
-                    number[index] = result;
-                    number[j+1] = "";
-
+            while (true) {
+                //算术题中的四个数字
+                String number[] = new String[4];
+                for (int j = 0; j < 4; j++) {
+                    number[j] = getRandomNumber(range);
                 }
 
-            }
+                //算术题中的三个运算符
+                for (int j = 0; j < 3; j++) {
+                    int operator = (int) (random.nextInt(4));
+                    operators[j] = operator;
+                }
 
-            //这一次遍历把加减算完，出最终result
-            for (int j = 0; j < operators.length; j++) {
-                if(operators[j] <= 1){
+                String str = number[0];
+                String result = number[0];
 
-                    for (int k = j; k >= 0 ; k--) {
-                        if(!"".equals(number[k])){
-                            index = k;
-                            break;
-                        }
-                    }
-
-                    for (int l = j; l < operators.length ; l++) {
-                        if(!"".equals(number[l])){
-                            index2 = l;
-                            break;
-                        }
-                    }
-
-                    int[] number1 = onlyGetNumber(number[index]);
-                    int[] number2 = onlyGetNumber(number[index2]);
-
-                    //转化为分子分母计算
-                    int a = number1[0]*number1[2]+number1[1];
-                    int b = number1[2];
-                    int c = number2[0]*number2[2]+number2[1];
-                    int d = number2[2];
-
+                //这一遍历得出表达式 str
+                for (int j = 0; j < operators.length; j++) {
                     if(operators[j] == 0){
-                        fenzi = a * d + b * c;
-                        fenmu = b * d;
-                    }else if(operators[j] == 1){
-                        fenzi = a * d - b * c;
-                        fenmu = b * d;
+                        str = str + " " + '+' + " " + number[j+1];
+                    }
+                    if(operators[j] == 1){
+                        str = str + " " + '-' + " " + number[j+1];
+                    }
+                    if(operators[j] == 2){
+                        str = str + " " + '×' + " " + number[j+1];
+                    }
+                    if(operators[j] == 3){
+                        str = str + " " + '÷' + " " + number[j+1];
+                    }
+                }
+
+                //这一遍遍历把乘除运算算完
+                for (int j = 0; j < operators.length; j++) {
+                    // 为乘号和除号
+                    if(operators[j] > 1){
+    //                    number[i]和number[i+1]进行运算，运算表达式另搞，结果放在number[i]中
+                        for (int k = j; k >= 0 ; k--) {
+                            if(number[k].length() != 0){
+                                index = k;
+                                break;
+                            }
+                        }
+                        int[] number1 = onlyGetNumber(number[index]);
+                        int[] number2 = onlyGetNumber(number[j+1]);
+
+                        //转化为分子分母计算
+                        int a = number1[0]*number1[2]+number1[1];
+                        int b = number1[2];
+                        int c = number2[0]*number2[2]+number2[1];
+                        int d = number2[2];
+
+                        if(operators[j] == 2){
+                            fenzi = a * c;
+                            fenmu = b * d;
+                        }else if(operators[j] == 3){
+                            fenzi = a * d;
+                            fenmu = b * c;
+                        }
+
+                        result = reductionofFraction(fenzi, fenmu);
+                        number[index] = result;
+                        number[j+1] = "";
+
                     }
 
-                    result = reductionofFraction(fenzi, fenmu);
-                    number[index] = result;
-                    number[j+1] = "";
                 }
+
+                //这一次遍历把加减算完，出最终result
+                for (int j = 0; j < operators.length; j++) {
+                    if(operators[j] <= 1){
+
+                        for (int k = j; k >= 0 ; k--) {
+                            if(number[k].length() != 0){
+                                index = k;
+                                break;
+                            }
+                        }
+
+//                        for (int l = j; l < operators.length ; l++) {
+//                            if(!"".equals(number[l])){
+//                                index2 = l;
+//                                break;
+//                            }
+//                        }
+
+                        int[] number1 = onlyGetNumber(number[index]);
+                        int[] number2 = onlyGetNumber(number[j+1]);
+
+                        //转化为分子分母计算
+                        int a = number1[0]*number1[2]+number1[1];
+                        int b = number1[2];
+                        int c = number2[0]*number2[2]+number2[1];
+                        int d = number2[2];
+
+                        if(operators[j] == 0){
+                            fenzi = a * d + b * c;
+                            fenmu = b * d;
+                        }else if(operators[j] == 1){
+                            fenzi = a * d - b * c;
+                            fenmu = b * d;
+                        }
+
+                        result = reductionofFraction(fenzi, fenmu);
+                        number[index] = result;
+                        number[j+1] = "";
+                    }
+                }
+
+                results[i] = result;
+
+                int[] temp = onlyGetNumber(result);
+                if(temp[0] >= 0 && temp[1] >= 0){
+                    expArr[0] = str + " " + '=';
+                    System.out.println(expArr[0]);
+
+                    break;
+                }
+
+//                int temp = Integer.parseInt(result.trim());
+//                Integer.parseInt(numString.trim())
+//                if(temp >= 0){
+//                    expArr[0] = str + " " + '=';
+//                    System.out.println(expArr[0]);
+//
+//                    break;
+//                }
             }
 
-            results[i] = result;
-
-            
-
-
-
-//            for (int j = 0; j < 3; j++) {
-//                int operator = (int) (random.nextInt(4));
-//
-//                // +加
-//                if(operator == 0){
-//                    str = str + " " + '+' + " " + number[j+1];
-//
-//                    //生成数组
-//                    int[] number1 = onlyGetNumber(result);
-//                    int[] number2 = onlyGetNumber(number[j+1]);
-//
-//                    //转化为分子分母计算
-//                    int a = number1[0]*number1[2]+number1[1];
-//                    int b = number1[2];
-//                    int c = number2[0]*number2[2]+number2[1];
-//                    int d = number2[2];
-//
-//                    int fenzi = a * d + b * c;
-//                    int fenmu = b * d;
-//                    result = reductionofFraction(fenzi, fenmu);
-//                }
-//
-//                // -减
-//                if(operator == 1){
-////                    str = str + '-' + number[j+1];
-//
-//                    //生成数组
-//                    int[] number1 = onlyGetNumber(result);
-//                    int[] number2 = onlyGetNumber(number[j+1]);
-//
-//                    //转化为分子分母计算
-//                    int a = number1[0]*number1[2]+number1[1];
-//                    int b = number1[2];
-//                    int c = number2[0]*number2[2]+number2[1];
-//                    int d = number2[2];
-//
-//                    if(a * d - b * c >= 0){
-//                        int fenzi = a * d - b * c;
-//                        int fenmu = b * d;
-//                        result = reductionofFraction(fenzi, fenmu);
-//
-//                        str = str + " " + '-' + " " + number[j + 1];
-//                    }else if(a * d - b * c < 0){
-//                        int fenzi = b * c - a * d;
-//                        int fenmu = b * d;
-//                        result = reductionofFraction(fenzi, fenmu);
-//
-//                        str = number[j + 1] + '-' + str;
-//                    }
-//
-//                }
-//
-//                // *乘
-//                if(operator == 2){
-//                    str = str + " " + '*' + " " + number[j+1];
-//
-//                    //生成数组
-//                    int[] number1 = onlyGetNumber(result);
-//                    int[] number2 = onlyGetNumber(number[j+1]);
-//
-//                    //转化为分子分母计算
-//                    int a = number1[0]*number1[2]+number1[1];
-//                    int b = number1[2];
-//                    int c = number2[0]*number2[2]+number2[1];
-//                    int d = number2[2];
-//
-//                    int fenzi = a * c;
-//                    int fenmu = b * d;
-//                    result = reductionofFraction(fenzi, fenmu);
-//                }
-//
-//                // %除
-//                if(operator == 3){
-//                    str = str + " " + '÷' + " " + number[j+1];
-//
-//                    //生成数组
-//                    int[] number1 = onlyGetNumber(result);
-//                    int[] number2 = onlyGetNumber(number[j+1]);
-//
-//                    //转化为分子分母计算
-//                    int a = number1[0]*number1[2]+number1[1];
-//                    int b = number1[2];
-//                    int c = number2[0]*number2[2]+number2[1];
-//                    int d = number2[2];
-//
-//                    int fenzi = a * d;
-//                    int fenmu = b * c;
-//                    result = reductionofFraction(fenzi, fenmu);
-//                }
-//            }
-//
-//            expArr[0] = str + " " + '=';
-//            System.out.println(expArr[0]);
-//            results[i] = result;
 
             FileWriter fw = null;
             try {
@@ -276,6 +214,71 @@ public class arithmeticProblem {
                     e.printStackTrace();
                 }
             }
+
+//            System.out.println("输入ok提交！");
+//            Scanner sc1 = new Scanner(System.in);
+//            String submit = sc1.nextLine();
+//            if (submit.equals("ok")) {
+//                String array[] = new String[num];
+//                try {
+//                    int k = 0;
+//
+//                    FileReader fr = new FileReader("C:\\Users\\86155\\Desktop\\大三上\\软件工程\\github\\data\\Your_answers.txt");
+//                    BufferedReader br = new BufferedReader(fr);
+//                    String s;
+//                    while ((s = br.readLine()) != null) {//读取小学生的答案
+//                        array[k] = s;
+//                        k++;
+//                    }
+//                    br.close();
+//                    fr.close();
+//                } catch (IOException e) {
+//                    System.out.println("指定文件不存在");
+//                }
+//                for (int j = 0; j < num; j++) {
+//                    if (array[j].equals(results[j])) {//验证答案，统计正确和错误的个数
+//
+//                        rightcount[j] = j + 1;
+//                        right1++;
+//                    } else {
+//
+//                        wrongcount[j] = j + 1;
+//                        wrong1++;
+//                    }
+//                }
+//                FileWriter fg = null;
+//                try {
+//                    //反馈正确与错误题目的信息
+//                    File f = new File("Grade.txt");
+//                    fg = new FileWriter(f, true);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                PrintWriter pg = new PrintWriter(fg);
+//                pg.println(" ");
+//                pg.print("Correct:" + right1 + "(");
+//                for (int j = 0; j <= num; j++) {
+//                    if (rightcount[j] != 0) {
+//                        pg.print(rightcount[j] + ",");
+//                    }
+//                }
+//                pg.println(")");
+//                pg.print("Wrong:" + wrong1 + "(");
+//                for (int j = 0; j <= num; j++) {
+//                    if (wrongcount[j] != 0) {
+//                        pg.print(wrongcount[j] + ",");
+//                    }
+//                }
+//                pg.print(")");
+//                pg.flush();
+//                try {
+//                    fg.flush();
+//                    pg.close();
+//                    fg.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
     }
 
@@ -289,7 +292,7 @@ public class arithmeticProblem {
             return reductionofFraction(a,b);
         }else {
 //            该数字为范围内的自然数
-            int c = (int) (random.nextInt(range));
+            int c = (int) (random.nextInt(range-1)+1);
             return c + "";
         }
     }
@@ -305,20 +308,20 @@ public class arithmeticProblem {
                 }
             }
         }
-        int temp = Integer.parseInt(str2);
+        int temp = Integer.parseInt(str2.trim());
         int[] temp2 = new int[3];
-        if(temp >= 100){
-            temp2[0] = temp / 100;
-            temp2[1] = (temp /10)%10;
-            temp2[2] = temp % 10;
-        }else if(temp >= 10){
-            temp2[0] = 0;
-            temp2[1] = temp / 10;
-            temp2[2] = temp % 10;
-        }else if(temp < 10){
+        if(temp >= 0 && temp < 10){
             temp2[0] = temp;
             temp2[1] = 0;
             temp2[2] = 1;
+        }else if(temp >= 10 && temp < 100){
+            temp2[0] = 0;
+            temp2[1] = temp / 10;
+            temp2[2] = temp % 10;
+        }else if(temp >= 100){
+            temp2[0] = temp / 100;
+            temp2[1] = (temp /10)%10;
+            temp2[2] = temp % 10;
         }
 
         return temp2;
